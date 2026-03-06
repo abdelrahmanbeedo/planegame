@@ -21,7 +21,7 @@ let bgY = 0
 let shake = 0
 
 // GLOBAL HP
-let globalHp = 10;
+let globalHp = 30;
 
 // ==========================================
 // ADD YOUR SPRITE FILE PATHS HERE
@@ -167,9 +167,9 @@ class Enemy {
 
         this.size = 180 // Made enemies much bigger!
 
-        this.speed = 120 + Math.random() * 80 + score * 2 // Dynamic diff
+        this.speed = 80 + Math.random() * 60 + score * 1 // Dynamic diff easier
 
-        this.maxHp = 3 + Math.floor(score / 30) // Dynamic diff
+        this.maxHp = 2 + Math.floor(score / 50) // Dynamic diff easier
         this.hp = this.maxHp
 
         this.type = Math.random() < 0.33 ? "zigzag" : (Math.random() < 0.5 ? "dive" : "normal")
@@ -372,7 +372,7 @@ class Powerup {
 
 }
 
-let players = [new Player()]
+let players = [new Player(), new Player(), new Player()]
 
 canvas.addEventListener("mousemove", e => {
     mouse.x = e.clientX
@@ -398,7 +398,7 @@ function spawnEnemies(dt) {
 
         enemies.push(new Enemy())
 
-        spawnTimer = Math.max(0.2, 1 - score * 0.005)
+        spawnTimer = Math.max(0.4, 1.2 - score * 0.003)
 
     }
 
@@ -503,7 +503,7 @@ function collisions() {
                 enemyBullets.splice(i, 1)
                 explode(b.x, b.y)
                 globalHp--
-                if (players.length > 1) players.splice(pi, 1);
+                if (players.length > 3) players.splice(pi, 1);
                 break;
             }
         }
@@ -535,7 +535,7 @@ function collisions() {
                 explode(e.x, e.y)
                 enemies.splice(ei, 1)
                 globalHp--
-                if (players.length > 1) players.splice(pi, 1);
+                if (players.length > 3) players.splice(pi, 1);
                 break;
             }
         }
