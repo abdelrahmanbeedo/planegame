@@ -29,6 +29,10 @@ canvas {
     text-shadow: 2px 2px 0px #000, 0 0 10px rgba(0, 255, 255, 0.8);
 }
 
+.hud.hidden {
+    display: none;
+}
+
 #score-display {
     font-size: 24px;
     margin-bottom: 10px;
@@ -90,4 +94,69 @@ canvas {
 #game-over button:hover {
     background: #fff;
     color: #000;
+}
+
+#start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 50px;
+    border: 4px solid #4caf50;
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 800px;
+}
+
+#start-screen.hidden {
+    display: none;
+}
+
+#start-screen h1 {
+    margin: 0;
+    color: #4caf50;
+    font-size: 48px;
+    text-shadow: 4px 4px 0px #000, 0 0 15px #4caf50;
+    line-height: 1.2;
+}
+
+.about-section {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #ddd;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-left: 4px solid #4caf50;
+}
+
+.about-section p:first-child {
+    color: #ffeb3b;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+#start-btn {
+    font-family: 'Press Start 2P', monospace;
+    background: #4caf50;
+    color: #000;
+    border: 4px solid #fff;
+    padding: 20px 40px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 10px;
+}
+
+#start-btn:hover {
+    background: #fff;
+    color: #000;
+    border-color: #4caf50;
+    transform: scale(1.05);
 }

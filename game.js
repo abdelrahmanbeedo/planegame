@@ -49,8 +49,15 @@ backgroundImg.src = "background.png"; // Add your scrolling background here
 // ==========================================
 
 let boss = null
-let nextBossScore = 250; // Boss will spawn every 30 points
+let nextBossScore = 50; // Boss will spawn every 50 points
 let isGameOver = false;
+let isGameStarted = false;
+
+document.getElementById("start-btn").addEventListener("click", () => {
+    isGameStarted = true;
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("game-hud").classList.remove("hidden");
+});
 
 class Player {
 
@@ -538,7 +545,7 @@ function collisions() {
 
 function update(dt) {
 
-    if (isGameOver) return;
+    if (!isGameStarted || isGameOver) return;
 
     bgY += 200 * dt
 
