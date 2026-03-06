@@ -64,7 +64,7 @@ class Player {
     constructor() {
 
         this.x = canvas.width / 2
-        this.y = canvas.height - 80
+        this.y = canvas.height - 150
         this.size = 170
 
         this.sprite = playerImages[Math.floor(Math.random() * playerImages.length)];
