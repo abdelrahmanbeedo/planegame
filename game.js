@@ -32,18 +32,25 @@ const playerImages = ["player1.png", "player2.png", "player3.png"].map(src => {
     return img;
 });
 
-const enemyImages = ["enemy1.png", "enemy2.png", "enemy3.png"].map(src => {
+const enemyImages = ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"].map(src => {
     let img = new Image();
     img.src = src;
     return img;
 });
 
-const bossImg = new Image();
-bossImg.src = "boss.png";
+const bossImages = ["boss1.png", "boss2.png"].map(src => {
+    let img = new Image();
+    img.src = src;
+    return img;
+});
+
+const backgroundImg = new Image();
+backgroundImg.src = "background.png"; // Add your scrolling background here
 // ==========================================
 
 let boss = null
 let bossSpawned = false
+let isGameOver = false;
 
 class Player {
 
@@ -147,10 +154,10 @@ class Enemy {
     constructor() {
 
         this.x = Math.random() * canvas.width
-        this.y = -40
+        this.y = -70
         this.startX = this.x
 
-        this.size = 40
+        this.size = 180 // Made enemies much bigger!
 
         this.speed = 120 + Math.random() * 80 + score * 2 // Dynamic diff
 
@@ -172,7 +179,11 @@ class Enemy {
 
     draw() {
         if (this.sprite.complete && this.sprite.naturalWidth > 0) {
-            ctx.drawImage(this.sprite, this.x, this.y, this.size, this.size)
+            ctx.save()
+            ctx.translate(this.x + this.size / 2, this.y + this.size / 2)
+            ctx.rotate(Math.PI) // Turn them 180 degrees
+            ctx.drawImage(this.sprite, -this.size / 2, -this.size / 2, this.size, this.size)
+            ctx.restore()
         } else {
             ctx.fillStyle = "red"
             ctx.fillRect(this.x, this.y, this.size, this.size)
@@ -221,10 +232,10 @@ class Boss {
 
     constructor() {
 
-        this.x = canvas.width / 2 - 100
-        this.y = -200
+        this.x = canvas.width / 2 - 200
+        this.y = -300
 
-        this.size = 200
+        this.size = 350
 
         this.maxHp = 50
         this.hp = this.maxHp
@@ -232,6 +243,8 @@ class Boss {
         this.speed = 60
 
         this.shootTimer = 0
+
+        this.sprite = bossImages[Math.floor(Math.random() * bossImages.length)];
 
     }
 
@@ -274,8 +287,12 @@ class Boss {
 
     draw() {
 
-        if (bossImg.complete && bossImg.naturalWidth > 0) {
-            ctx.drawImage(bossImg, this.x, this.y, this.size, this.size)
+        if (this.sprite.complete && this.sprite.naturalWidth > 0) {
+            ctx.save()
+            ctx.translate(this.x + this.size / 2, this.y + this.size / 2)
+            ctx.rotate(Math.PI)
+            ctx.drawImage(this.sprite, -this.size / 2, -this.size / 2, this.size, this.size)
+            ctx.restore()
         } else {
             ctx.fillStyle = "purple"
             ctx.fillRect(this.x, this.y, this.size, this.size)
@@ -520,6 +537,8 @@ function collisions() {
 
 function update(dt) {
 
+    if (isGameOver) return;
+
     bgY += 200 * dt
 
     if (bgY > canvas.height) {
@@ -598,6 +617,22 @@ function update(dt) {
 
     collisions()
 
+    // UI Updates
+    document.getElementById("score-display").innerText = "SCORE: " + score;
+    document.getElementById("hp-display").innerText = "GLOBAL HP: " + globalHp + " (" + players.length + " Planes)";
+
+    if (combo > 1) {
+        document.getElementById("combo-display").innerText = "x" + combo + " COMBO! (" + Math.ceil(comboTimer * 10) / 10 + "s)";
+    } else {
+        document.getElementById("combo-display").innerText = "";
+    }
+
+    if (globalHp <= 0) {
+        isGameOver = true;
+        document.getElementById("final-score").innerText = "SCORE: " + score;
+        document.getElementById("game-over").classList.remove("hidden");
+    }
+
 }
 
 function draw() {
@@ -618,9 +653,20 @@ function draw() {
     ctx.fillStyle = "black"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = "#111"
-    ctx.fillRect(0, bgY, canvas.width, canvas.height)
-    ctx.fillRect(0, bgY - canvas.height, canvas.width, canvas.height)
+    if (backgroundImg.complete && backgroundImg.naturalWidth > 0) {
+        let imgAspect = backgroundImg.width / backgroundImg.height;
+        let drawWidth = canvas.width;
+        let drawHeight = canvas.width / imgAspect;
+
+        let bgScroll = bgY % drawHeight;
+
+        ctx.drawImage(backgroundImg, 0, bgScroll, drawWidth, drawHeight);
+        ctx.drawImage(backgroundImg, 0, bgScroll - drawHeight, drawWidth, drawHeight);
+    } else {
+        ctx.fillStyle = "#111"
+        ctx.fillRect(0, bgY, canvas.width, canvas.height)
+        ctx.fillRect(0, bgY - canvas.height, canvas.width, canvas.height)
+    }
 
     players.forEach(p => p.draw())
 
@@ -645,18 +691,6 @@ function draw() {
         ctx.fillRect(canvas.width / 2 - 200, 20, 400 * (boss.hp / boss.maxHp), 20)
 
     }
-
-    ctx.fillStyle = "white"
-    ctx.font = "20px Arial"
-
-    ctx.fillText("Score: " + score + (combo > 1 ? " (x" + combo + " Combo!)" : ""), 20, 30)
-    if (combo > 1) {
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(20, 38, comboTimer * 50, 5);
-        ctx.fillStyle = "white";
-    }
-
-    ctx.fillText("Global HP: " + globalHp + " (" + players.length + " Planes)", 20, 60)
 
     ctx.restore()
 

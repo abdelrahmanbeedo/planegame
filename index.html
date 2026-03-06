@@ -3,20 +3,26 @@
 
 <head>
     <title>Plane Shooter</title>
-    <style>
-        body {
-            margin: 0;
-            background: black;
-            overflow: hidden
-        }
-
-        canvas {
-            display: block
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div id="ui-layer">
+        <div class="hud">
+            <div id="score-display">SCORE: 0</div>
+            <div id="combo-display"></div>
+            <div id="hp-display">GLOBAL HP: 10</div>
+        </div>
+
+        <div id="game-over" class="hidden">
+            <h1>GAME OVER</h1>
+            <p id="final-score">SCORE: 0</p>
+            <button onclick="location.reload()">TRY AGAIN</button>
+        </div>
+    </div>
     <canvas id="game"></canvas>
     <script src="game.js"></script>
 </body>
