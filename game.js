@@ -26,7 +26,7 @@ let globalHp = 10;
 // ==========================================
 // ADD YOUR SPRITE FILE PATHS HERE
 // ==========================================
-const playerImages = ["player1.png", "player2.png", "player3.png"].map(src => {
+const playerImages = ["p1.png"].map(src => {
     let img = new Image();
     img.src = src;
     return img;
@@ -49,7 +49,7 @@ backgroundImg.src = "background.png"; // Add your scrolling background here
 // ==========================================
 
 let boss = null
-let bossSpawned = false
+let nextBossScore = 250; // Boss will spawn every 30 points
 let isGameOver = false;
 
 class Player {
@@ -58,6 +58,7 @@ class Player {
 
         this.x = canvas.width / 2
         this.y = canvas.height - 80
+        this.size = 100
 
         this.sprite = playerImages[Math.floor(Math.random() * playerImages.length)];
 
@@ -113,10 +114,10 @@ class Player {
     draw() {
 
         if (this.sprite.complete && this.sprite.naturalWidth > 0) {
-            ctx.drawImage(this.sprite, this.x - 20, this.y, 40, 40)
+            ctx.drawImage(this.sprite, this.x - this.size / 2, this.y, this.size, this.size)
         } else {
             ctx.fillStyle = "cyan"
-            ctx.fillRect(this.x - 20, this.y, 40, 40)
+            ctx.fillRect(this.x - this.size / 2, this.y, this.size, this.size)
         }
 
     }
@@ -394,11 +395,11 @@ function spawnEnemies(dt) {
 
     }
 
-    if (score >= 20 && !boss && !bossSpawned) {
+    if (score >= nextBossScore && !boss) {
 
         boss = new Boss()
 
-        bossSpawned = true
+        nextBossScore += 100; // Next boss is +100 points away
 
     }
 
@@ -491,7 +492,7 @@ function collisions() {
     enemyBullets.forEach((b, i) => {
         for (let pi = players.length - 1; pi >= 0; pi--) {
             let p = players[pi];
-            if (b.x > p.x && b.x < p.x + 40 && b.y > p.y && b.y < p.y + 40) {
+            if (b.x > p.x - p.size / 2 && b.x < p.x + p.size / 2 && b.y > p.y && b.y < p.y + p.size) {
                 enemyBullets.splice(i, 1)
                 explode(b.x, b.y)
                 globalHp--
@@ -504,7 +505,7 @@ function collisions() {
     powerups.forEach((p, i) => {
         for (let pi = players.length - 1; pi >= 0; pi--) {
             let pl = players[pi];
-            if (pl.x < p.x + p.size && pl.x + 40 > p.x && pl.y < p.y + p.size && pl.y + 40 > p.y) {
+            if (pl.x - pl.size / 2 < p.x + p.size && pl.x + pl.size / 2 > p.x && pl.y < p.y + p.size && pl.y + pl.size > p.y) {
                 if (p.type === "clone") {
                     let newP = new Player();
                     newP.x = pl.x;
@@ -523,7 +524,7 @@ function collisions() {
     enemies.forEach((e, ei) => {
         for (let pi = players.length - 1; pi >= 0; pi--) {
             let p = players[pi];
-            if (p.x < e.x + e.size && p.x + 40 > e.x && p.y < e.y + e.size && p.y + 40 > e.y) {
+            if (p.x - p.size / 2 < e.x + e.size && p.x + p.size / 2 > e.x && p.y < e.y + e.size && p.y + p.size > e.y) {
                 explode(e.x, e.y)
                 enemies.splice(ei, 1)
                 globalHp--
